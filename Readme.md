@@ -1,7 +1,7 @@
 # Личный проект «Кексобукинг» [![Build status][travis-image]][travis-url]
 
 * Студент: [Yana Denisenko](https://up.htmlacademy.ru/javascript/14/user/253889).
-* Наставник: `Неизвестно`.
+* Наставник: [Данил Панкрашин](https://htmlacademy.ru/profile/danpan).
 
 ---
 
