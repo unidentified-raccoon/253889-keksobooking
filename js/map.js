@@ -92,18 +92,20 @@ var mapElement = document.querySelector('.map');
 var mapFiltersContainer = document.querySelector('.map__filters-container');
 var mapPinsElement = document.querySelector('.map__pins');
 
-function renderPin(offer) {
+function renderPin(offer, number) {
   var newElement = pinTemplate.querySelector('.map__pin').cloneNode(true);
   newElement.setAttribute('style', 'left: ' + (offer.location.x + PIN_WIDTH / 2) + 'px; top: ' + (offer.location.y + PIN_HEIGHT) + 'px;');
   newElement.querySelector('img').setAttribute('src', offer.author.avatar);
   newElement.querySelector('img').setAttribute('alt', offer.offer.title);
+  newElement.id = 'pin-' + number;
+
 
   return newElement;
 }
 
 var fragment = document.createDocumentFragment();
 for (var l = 0; l < window.apartmentCards.length; l++) {
-  fragment.appendChild(renderPin(window.apartmentCards[l]));
+  fragment.appendChild(renderPin(window.apartmentCards[l], l));
 }
 
 mapPinsElement.appendChild(fragment);
@@ -118,6 +120,7 @@ function renderCard(offer) {
   newPopupElement.querySelector('.popup__text--capacity').textContent = offer.offer.rooms + ' комнаты для ' + offer.offer.guests + ' гостей';
   newPopupElement.querySelector('.popup__text--time').textContent = 'Заезд после ' + offer.offer.checkin + ', выезд до ' + offer.offer.checkout;
   newPopupElement.querySelector('.popup__description').textContent = offer.offer.description;
+
   renderPhotoBlock(newPopupElement, offer.offer.photos);
   renderFeatureIcons(newPopupElement, offer.offer.features);
 
@@ -126,8 +129,8 @@ function renderCard(offer) {
 
 var offerCard = document.createDocumentFragment();
 
-offerCard.appendChild(renderCard(window.apartmentCards[1]));
-mapElement.insertBefore(offerCard, mapFiltersContainer);
+// offerCard.appendChild(renderCard(window.apartmentCards[1]));
+// mapElement.insertBefore(offerCard, mapFiltersContainer);
 
 // 1. Создать функцию добавления фоток (передаем туда newPopupElement)
 function renderPhotoBlock(element, photos) {
@@ -162,4 +165,63 @@ function renderFeatureIcons(element, icons) {
     // 5. featureIconsElement.appendChild(featureIconElement)
     featureIconsElement.appendChild(featureIconElement);
   }
+}
+
+// ---------------------
+
+// disabling forms
+var form = document.querySelector('.ad-form');
+var formFieldsets = form.querySelectorAll('fieldset');
+
+formFieldsets.disabled = true;
+
+// нужно добавить обработчик события mouseup на элемент .map__pin--main.
+// Обработчик  события mouseup должен вызывать функцию, которая будет отменять
+// изменения DOM-элементов, описанные в пункте «Неактивное состояние» технического задания.
+var pinMain = document.querySelector('.map__pin--main');
+var map = document.querySelector('.map');
+
+var formAddressField = form.querySelector('#address');
+
+function activateMap() {
+  map.classList.remove('map--faded');
+}
+
+function activateForm() {
+  form.classList.remove('ad-form--disabled');
+  formFieldsets.disabled = false;
+}
+// в обработчике события mouseup на элементе метки,
+// кроме вызова метода, переводящего страницу в активное состояние,
+// должен находиться вызов метода, который устанавливает значения поля ввода
+// адреса
+function getActivePinLocation(evt) {
+  formAddressField.value = evt.clientX + ' , ' + evt.clientY;
+}
+
+pinMain.addEventListener('mouseup', function () {
+  activateMap();
+  activateForm();
+  getActivePinLocation();
+});
+
+// Нажатие на метку похожего объявления на карте, приводит
+// к показу карточки с подробной информацией об этом объявлении
+
+mapElement.addEventListener('click', onPinClick);
+
+function onPinClick(evt) {
+  var target = evt.target;
+  evt.preventDefault();
+  while (target !== mapElement) {
+    if (target.className === 'map__pin') {
+      var targetId = target.id.split('-')[1];
+      replaceOfferPopup(targetId);
+      return;
+    }
+  }
+}
+
+function replaceOfferPopup(activePinId) {
+  offerCard.appendChild(renderCard(window.apartmentCards[activePinId]));
 }
