@@ -97,18 +97,24 @@ function renderPin(offer, number) {
   newElement.setAttribute('style', 'left: ' + (offer.location.x + PIN_WIDTH / 2) + 'px; top: ' + (offer.location.y + PIN_HEIGHT) + 'px;');
   newElement.querySelector('img').setAttribute('src', offer.author.avatar);
   newElement.querySelector('img').setAttribute('alt', offer.offer.title);
-  newElement.id = 'pin-' + number;
-
+  newElement.pinId = number;
+  newElement.addEventListener('click', function () {
+    replaceOfferPopup(offer);
+  });
 
   return newElement;
 }
 
-var fragment = document.createDocumentFragment();
-for (var l = 0; l < window.apartmentCards.length; l++) {
-  fragment.appendChild(renderPin(window.apartmentCards[l], l));
+// function to render pins on mapPinsElement
+function renderPinsOnMap() {
+  var fragment = document.createDocumentFragment();
+  for (var l = 0; l < window.apartmentCards.length; l++) {
+    fragment.appendChild(renderPin(window.apartmentCards[l], l));
+  }
+
+  mapPinsElement.appendChild(fragment);
 }
 
-mapPinsElement.appendChild(fragment);
 
 function renderCard(offer) {
   var newPopupElement = mapCardElement.cloneNode(true);
@@ -126,11 +132,6 @@ function renderCard(offer) {
 
   return newPopupElement;
 }
-
-var offerCard = document.createDocumentFragment();
-
-// offerCard.appendChild(renderCard(window.apartmentCards[1]));
-// mapElement.insertBefore(offerCard, mapFiltersContainer);
 
 // 1. Создать функцию добавления фоток (передаем туда newPopupElement)
 function renderPhotoBlock(element, photos) {
@@ -167,17 +168,26 @@ function renderFeatureIcons(element, icons) {
   }
 }
 
-// ---------------------
-
-// disabling forms
+// ---------------------------------
+// enabling/disabling form fieldsets
 var form = document.querySelector('.ad-form');
 var formFieldsets = form.querySelectorAll('fieldset');
 
-formFieldsets.disabled = true;
+function switchingFormFieldsetState(boolean) {
+  for (var u = 0; u < formFieldsets.length; u++) {
+    var formFieldsetElement = formFieldsets[u];
+    formFieldsetElement.disabled = boolean;
+  }
+}
+
+switchingFormFieldsetState(true);
 
 // нужно добавить обработчик события mouseup на элемент .map__pin--main.
 // Обработчик  события mouseup должен вызывать функцию, которая будет отменять
 // изменения DOM-элементов, описанные в пункте «Неактивное состояние» технического задания.
+var MAIN_PIN_WIDTH = 62;// px
+var MAIN_PIN_HEIGHT = 84;// px
+
 var pinMain = document.querySelector('.map__pin--main');
 var map = document.querySelector('.map');
 
@@ -189,39 +199,34 @@ function activateMap() {
 
 function activateForm() {
   form.classList.remove('ad-form--disabled');
-  formFieldsets.disabled = false;
+  switchingFormFieldsetState(false);
+  renderPinsOnMap();
 }
+
+
 // в обработчике события mouseup на элементе метки,
 // кроме вызова метода, переводящего страницу в активное состояние,
 // должен находиться вызов метода, который устанавливает значения поля ввода
 // адреса
+
 function getActivePinLocation(evt) {
-  formAddressField.value = evt.clientX + ' , ' + evt.clientY;
+  formAddressField.value = evt.clientX + (MAIN_PIN_WIDTH / 2) + ' , ' + (evt.clientY + MAIN_PIN_HEIGHT);
 }
 
-pinMain.addEventListener('mouseup', function () {
-  activateMap();
-  activateForm();
-  getActivePinLocation();
+pinMain.addEventListener('mouseup', function (event) {
+  activateMap(event);
+  activateForm(event);
+  getActivePinLocation(event);
 });
 
 // Нажатие на метку похожего объявления на карте, приводит
 // к показу карточки с подробной информацией об этом объявлении
 
-mapElement.addEventListener('click', onPinClick);
-
-function onPinClick(evt) {
-  var target = evt.target;
-  evt.preventDefault();
-  while (target !== mapElement) {
-    if (target.className === 'map__pin') {
-      var targetId = target.id.split('-')[1];
-      replaceOfferPopup(targetId);
-      return;
-    }
+var offerCard;
+function replaceOfferPopup(offer) {
+  if (offerCard) {
+    offerCard.remove();
   }
-}
-
-function replaceOfferPopup(activePinId) {
-  offerCard.appendChild(renderCard(window.apartmentCards[activePinId]));
+  offerCard = renderCard(offer);
+  mapElement.insertBefore(offerCard, mapFiltersContainer);
 }
