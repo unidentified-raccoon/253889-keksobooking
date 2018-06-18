@@ -252,3 +252,97 @@ map.addEventListener('keydown', function (evt) {
     closePopup();
   }
 });
+
+// -------------------------------------------
+// form behavior
+(function () {
+  var timeInField = document.querySelector('#timein');
+  var timeOutField = document.querySelector('#timeout');
+  var apartmentTypeField = document.querySelector('#type');
+  var minPriceField = document.querySelector('#price');
+  var numberOfRoomsField = document.querySelector('#room_number');
+  var numberOfGuestsField = document.querySelector('#capacity');
+
+  // min price/property-type dependencies
+  var setMinimalPrice = function () {
+    if (apartmentTypeField.value === 'bungalo') {
+      minPriceField.min = '0';
+      minPriceField.placeholder = '0';
+    }
+    if (apartmentTypeField.value === 'flat') {
+      minPriceField.min = '1000';
+      minPriceField.placeholder = '1000';
+    }
+    if (apartmentTypeField.value === 'house') {
+      minPriceField.min = '5000';
+      minPriceField.placeholder = '5000';
+    }
+    if (apartmentTypeField.value === 'palace') {
+      minPriceField.min = '10000';
+      minPriceField.placeholder = '10000';
+    }
+  };
+
+  // timeOut/timeIn dependencies
+  var setTimeOut = function () {
+    if (timeInField.value === '12:00') {
+      timeOutField.value = '12:00';
+    }
+    if (timeInField.value === '13:00') {
+      timeOutField.value = '13:00';
+    }
+    if (timeInField.value === '14:00') {
+      timeOutField.value = '14:00';
+    }
+  };
+
+  // timeIn/timeOut dependencies
+  var setTimeIn = function () {
+    if (timeOutField.value === '12:00') {
+      timeInField.value = '12:00';
+    }
+    if (timeOutField.value === '13:00') {
+      timeInField.value = '13:00';
+    }
+    if (timeOutField.value === '14:00') {
+      timeInField.value = '14:00';
+    }
+  };
+
+  // number-of-rooms/guests dependencies
+  var setCapacity = function () {
+    if (numberOfRoomsField.value === '1') {
+      numberOfGuestsField.value = '1';
+    }
+    if (numberOfRoomsField.value === '2') {
+      numberOfGuestsField.value = '2';
+    }
+    if (numberOfRoomsField.value === '3') {
+      numberOfGuestsField.value = '3';
+    }
+    if (numberOfRoomsField.value === '100') {
+      numberOfGuestsField.value = '0';
+    }
+  };
+
+  // number-of-guests/rooms dependencies
+  var setApartmentType = function () {
+    if (numberOfGuestsField.value === '2') {
+      numberOfRoomsField.value = '3';
+    }
+    if (numberOfGuestsField.value === '3') {
+      numberOfRoomsField.value = '3';
+    }
+    if (numberOfGuestsField.value === '0') {
+      numberOfRoomsField.value = '100';
+    }
+  };
+
+  timeInField.addEventListener('change', setTimeOut);
+  timeOutField.addEventListener('change', setTimeIn);
+
+  apartmentTypeField.addEventListener('change', setMinimalPrice);
+
+  numberOfRoomsField.addEventListener('change', setCapacity);
+  numberOfGuestsField.addEventListener('change', setApartmentType);
+})();
