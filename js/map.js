@@ -256,93 +256,77 @@ map.addEventListener('keydown', function (evt) {
 // -------------------------------------------
 // form behavior
 (function () {
-  var timeInField = document.querySelector('#timein');
-  var timeOutField = document.querySelector('#timeout');
+  var checkInField = document.querySelector('#timein');
+  var checkOutField = document.querySelector('#timeout');
   var apartmentTypeField = document.querySelector('#type');
   var minPriceField = document.querySelector('#price');
   var numberOfRoomsField = document.querySelector('#room_number');
   var numberOfGuestsField = document.querySelector('#capacity');
 
-  // min price/property-type dependencies
-  var setMinimalPrice = function () {
-    if (apartmentTypeField.value === 'bungalo') {
-      minPriceField.min = '0';
-      minPriceField.placeholder = '0';
-    }
-    if (apartmentTypeField.value === 'flat') {
-      minPriceField.min = '1000';
-      minPriceField.placeholder = '1000';
-    }
-    if (apartmentTypeField.value === 'house') {
-      minPriceField.min = '5000';
-      minPriceField.placeholder = '5000';
-    }
-    if (apartmentTypeField.value === 'palace') {
-      minPriceField.min = '10000';
-      minPriceField.placeholder = '10000';
-    }
+  var typeOfPriceDependency = {
+    bungalo: '0',
+    flat: '1000',
+    house: '5000',
+    palace: '10000'
   };
+
+
+  // min price/property-type dependencies
+  function setMinimalPrice() {
+    minPriceField.min = typeOfPriceDependency[apartmentTypeField.value];
+    minPriceField.placeholder = typeOfPriceDependency[apartmentTypeField.value];
+  }
 
   // timeOut/timeIn dependencies
-  var setTimeOut = function () {
-    if (timeInField.value === '12:00') {
-      timeOutField.value = '12:00';
+  function setTimeOut() {
+    if (checkInField.value === '12:00') {
+      checkOutField.value = '12:00';
     }
-    if (timeInField.value === '13:00') {
-      timeOutField.value = '13:00';
+    if (checkInField.value === '13:00') {
+      checkOutField.value = '13:00';
     }
-    if (timeInField.value === '14:00') {
-      timeOutField.value = '14:00';
+    if (checkInField.value === '14:00') {
+      checkOutField.value = '14:00';
     }
-  };
+  }
 
   // timeIn/timeOut dependencies
-  var setTimeIn = function () {
-    if (timeOutField.value === '12:00') {
-      timeInField.value = '12:00';
+  function setTimeIn() {
+    if (checkOutField.value === '12:00') {
+      checkInField.value = '12:00';
     }
-    if (timeOutField.value === '13:00') {
-      timeInField.value = '13:00';
+    if (checkOutField.value === '13:00') {
+      checkInField.value = '13:00';
     }
-    if (timeOutField.value === '14:00') {
-      timeInField.value = '14:00';
+    if (checkOutField.value === '14:00') {
+      checkInField.value = '14:00';
     }
-  };
+  }
 
-  // number-of-rooms/guests dependencies
-  var setCapacity = function () {
-    if (numberOfRoomsField.value === '1') {
-      numberOfGuestsField.value = '1';
+  function roomsGuestsValidation() {
+    if ((numberOfRoomsField.value === '1') && (numberOfGuestsField.value !== '1')) {
+      numberOfGuestsField.setCustomValidity('One room is suited only for one guest');
+    } else if ((numberOfRoomsField.value === '2') && (numberOfGuestsField.value !== '1') && (numberOfGuestsField.value !== '2')) {
+      numberOfGuestsField.setCustomValidity('Two rooms are suited only for one or two guests');
+    } else if ((numberOfRoomsField.value === '3') && (numberOfGuestsField.value !== '1') && (numberOfGuestsField.value !== '2') && (numberOfGuestsField.value !== '3')) {
+      numberOfGuestsField.setCustomValidity('Three rooms are suited only for one, two or three guests');
+    } else if ((numberOfRoomsField.value === '100') && (numberOfGuestsField !== '0')) {
+      numberOfGuestsField.setCustomValidity('Too many rooms to have any guests. Please choose another number of rooms');
+    } else {
+      numberOfGuestsField.setCustomValidity('');
     }
-    if (numberOfRoomsField.value === '2') {
-      numberOfGuestsField.value = '2';
-    }
-    if (numberOfRoomsField.value === '3') {
-      numberOfGuestsField.value = '3';
-    }
-    if (numberOfRoomsField.value === '100') {
-      numberOfGuestsField.value = '0';
-    }
-  };
+  }
 
-  // number-of-guests/rooms dependencies
-  var setApartmentType = function () {
-    if (numberOfGuestsField.value === '2') {
-      numberOfRoomsField.value = '3';
-    }
-    if (numberOfGuestsField.value === '3') {
-      numberOfRoomsField.value = '3';
-    }
-    if (numberOfGuestsField.value === '0') {
-      numberOfRoomsField.value = '100';
-    }
-  };
-
-  timeInField.addEventListener('change', setTimeOut);
-  timeOutField.addEventListener('change', setTimeIn);
+  checkInField.addEventListener('change', setTimeOut);
+  checkOutField.addEventListener('change', setTimeIn);
 
   apartmentTypeField.addEventListener('change', setMinimalPrice);
 
-  numberOfRoomsField.addEventListener('change', setCapacity);
-  numberOfGuestsField.addEventListener('change', setApartmentType);
+  numberOfRoomsField.addEventListener('change', function () {
+    roomsGuestsValidation();
+  });
+  numberOfGuestsField.addEventListener('change', function () {
+    roomsGuestsValidation();
+  });
+
 })();
