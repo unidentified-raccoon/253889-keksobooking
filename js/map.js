@@ -263,6 +263,9 @@ map.addEventListener('keydown', function (evt) {
   var numberOfRoomsField = document.querySelector('#room_number');
   var numberOfGuestsField = document.querySelector('#capacity');
 
+  roomsGuestsValidation();
+  setMinimalPrice();
+
   var typeOfPriceDependency = {
     bungalo: '0',
     flat: '1000',
@@ -275,32 +278,6 @@ map.addEventListener('keydown', function (evt) {
   function setMinimalPrice() {
     minPriceField.min = typeOfPriceDependency[apartmentTypeField.value];
     minPriceField.placeholder = typeOfPriceDependency[apartmentTypeField.value];
-  }
-
-  // timeOut/timeIn dependencies
-  function setTimeOut() {
-    if (checkInField.value === '12:00') {
-      checkOutField.value = '12:00';
-    }
-    if (checkInField.value === '13:00') {
-      checkOutField.value = '13:00';
-    }
-    if (checkInField.value === '14:00') {
-      checkOutField.value = '14:00';
-    }
-  }
-
-  // timeIn/timeOut dependencies
-  function setTimeIn() {
-    if (checkOutField.value === '12:00') {
-      checkInField.value = '12:00';
-    }
-    if (checkOutField.value === '13:00') {
-      checkInField.value = '13:00';
-    }
-    if (checkOutField.value === '14:00') {
-      checkInField.value = '14:00';
-    }
   }
 
   function roomsGuestsValidation() {
@@ -317,16 +294,16 @@ map.addEventListener('keydown', function (evt) {
     }
   }
 
-  checkInField.addEventListener('change', setTimeOut);
-  checkOutField.addEventListener('change', setTimeIn);
+  function checkTime(evt) {
+    checkInField.value = checkOutField.value = evt.target.value;
+  }
+
+  checkInField.addEventListener('change', checkTime);
+  checkOutField.addEventListener('change', checkTime);
 
   apartmentTypeField.addEventListener('change', setMinimalPrice);
 
-  numberOfRoomsField.addEventListener('change', function () {
-    roomsGuestsValidation();
-  });
-  numberOfGuestsField.addEventListener('change', function () {
-    roomsGuestsValidation();
-  });
+  numberOfRoomsField.addEventListener('change', roomsGuestsValidation);
+  numberOfGuestsField.addEventListener('change', roomsGuestsValidation);
 
 })();
