@@ -263,9 +263,6 @@ map.addEventListener('keydown', function (evt) {
   var numberOfRoomsField = document.querySelector('#room_number');
   var numberOfGuestsField = document.querySelector('#capacity');
 
-  roomsGuestsValidation();
-  setMinimalPrice();
-
   var typeOfPriceDependency = {
     bungalo: '0',
     flat: '1000',
@@ -273,6 +270,8 @@ map.addEventListener('keydown', function (evt) {
     palace: '10000'
   };
 
+  roomsGuestsValidation();
+  setMinimalPrice();
 
   // min price/property-type dependencies
   function setMinimalPrice() {
