@@ -224,15 +224,6 @@ function getActivePinLocation(evt) {
   formAddressField.value = evt.clientX + (MAIN_PIN_WIDTH / 2) + ' , ' + (evt.clientY + MAIN_PIN_HEIGHT);
 }
 
-pinMain.addEventListener('mouseup', function (event) {
-  getActivePinLocation(event);
-});
-
-pinMain.addEventListener('mousedown', function (event) {
-  activateMap(event);
-  activateForm(event);
-});
-
 // Нажатие на метку похожего объявления на карте, приводит
 // к показу карточки с подробной информацией об этом объявлении
 
@@ -361,8 +352,18 @@ pinMain.addEventListener('mousedown', function (evt) {
 
   }
 
+  var isMapActive = map.classList.contains('map--faded');
+  var isFormActive = form.classList.contains('ad-form--disabled');
+
   function onMouseUp(upEvt) {
     upEvt.preventDefault();
+
+    if (isMapActive && isFormActive) {
+      activateMap(event);
+      activateForm(event);
+    }
+
+    getActivePinLocation(event);
 
     document.removeEventListener('mousemove', onMouseMove);
     document.removeEventListener('mouseup', onMouseUp);
