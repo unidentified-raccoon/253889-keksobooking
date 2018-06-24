@@ -225,9 +225,12 @@ function getActivePinLocation(evt) {
 }
 
 pinMain.addEventListener('mouseup', function (event) {
+  getActivePinLocation(event);
+});
+
+pinMain.addEventListener('mousedown', function (event) {
   activateMap(event);
   activateForm(event);
-  getActivePinLocation(event);
 });
 
 // Нажатие на метку похожего объявления на карте, приводит
