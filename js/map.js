@@ -30,22 +30,25 @@
 
   switchingFormFieldsetState(true);
 
-  function successHandler(response) {
-    console.log(response);
-  }
+
+  // window.apartmentCards = [];
+
+  // function successHandler(response) {
+  //   // window.apartmentCards = response;
+  //   renderPinsOnMap(response);
+  // }
 
   function onError() {
     console.log('error');
   }
 
-  window.backend.load(successHandler, onError);
+  // window.backend.load(successHandler, onError);
   // function to render pins on mapPinsElement
-  function renderPinsOnMap() {
+  function renderPinsOnMap(offers) {
     var fragment = document.createDocumentFragment();
-    for (var l = 0; l < window.apartmentCards.length; l++) {
-      fragment.appendChild(window.renderPin(window.apartmentCards[l], l));
+    for (var l = 0; l < offers.length; l++) {
+      fragment.appendChild(window.renderPin(offers[l], l));
     }
-
     mapPinsElement.appendChild(fragment);
   }
 
@@ -138,7 +141,7 @@
       if (isMapActive === false) {
         activateMap(event);
         activateForm(event);
-        renderPinsOnMap();
+        window.backend.load(renderPinsOnMap, onError);
       }
       isMapActive = true;
 
