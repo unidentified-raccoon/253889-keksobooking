@@ -30,6 +30,15 @@
 
   switchingFormFieldsetState(true);
 
+  function successHandler(response) {
+    console.log(response);
+  }
+
+  function onError() {
+    console.log('error');
+  }
+
+  window.backend.load(successHandler, onError);
   // function to render pins on mapPinsElement
   function renderPinsOnMap() {
     var fragment = document.createDocumentFragment();
