@@ -7,6 +7,7 @@
   var minPriceField = document.querySelector('#price');
   var numberOfRoomsField = document.querySelector('#room_number');
   var numberOfGuestsField = document.querySelector('#capacity');
+  var form = document.querySelector('.ad-form');
 
   var typeOfPriceDependency = {
     bungalo: '0',
@@ -49,5 +50,21 @@
 
   numberOfRoomsField.addEventListener('change', roomsGuestsValidation);
   numberOfGuestsField.addEventListener('change', roomsGuestsValidation);
+
+  // -----------------------------
+  form.addEventListener('submit', function (evt) {
+    window.backend.upload(new FormData(form), onSuccessHandler, onError);
+    evt.preventDefault();
+  });
+
+
+  function onSuccessHandler() {
+    form.reset();
+    window.map.mainPinCoordsToDefault();
+  }
+
+  function onError() {
+    window.errorHandler();
+  }
 
 })();

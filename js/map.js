@@ -30,13 +30,13 @@
 
   switchingFormFieldsetState(true);
 
+  // window.backend.load(successHandler, onError);
   // function to render pins on mapPinsElement
-  function renderPinsOnMap() {
+  function renderPinsOnMap(offers) {
     var fragment = document.createDocumentFragment();
-    for (var l = 0; l < window.apartmentCards.length; l++) {
-      fragment.appendChild(window.renderPin(window.apartmentCards[l], l));
+    for (var l = 0; l < offers.length; l++) {
+      fragment.appendChild(window.renderPin(offers[l], l));
     }
-
     mapPinsElement.appendChild(fragment);
   }
 
@@ -129,7 +129,7 @@
       if (isMapActive === false) {
         activateMap(event);
         activateForm(event);
-        renderPinsOnMap();
+        window.backend.load(renderPinsOnMap, window.errorHandler);
       }
       isMapActive = true;
 
@@ -143,6 +143,25 @@
     document.addEventListener('mouseup', onMouseUp);
   });
 
-  window.replaceOfferPopup = replaceOfferPopup;
-  window.closePopup = closePopup;
+  // ------------
+  var MAIN_PIN_DEFAULT_COORDS = {
+    x: 570, // px
+    y: 375 // px
+  };
+
+  function getPinLocation(target) {
+    formAddressField.value = target.offsetLeft + (MAIN_PIN_WIDTH / 2) + ' , ' + (target.offsetTop + MAIN_PIN_HEIGHT);
+  }
+
+  function mainPinCoordsToDefault() {
+    pinMain.style.left = MAIN_PIN_DEFAULT_COORDS.x + 'px';
+    pinMain.style.top = MAIN_PIN_DEFAULT_COORDS.y + 'px';
+    getPinLocation(pinMain);
+  }
+  // ------------
+  window.map = {
+    replaceOfferPopup: replaceOfferPopup,
+    closePopup: closePopup,
+    mainPinCoordsToDefault: mainPinCoordsToDefault
+  };
 })();
