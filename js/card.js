@@ -26,11 +26,11 @@
     newPopupElement.querySelector('.popup__text--time').textContent = 'Заезд после ' + offer.offer.checkin + ', выезд до ' + offer.offer.checkout;
     newPopupElement.querySelector('.popup__description').textContent = offer.offer.description;
     newPopupElement.querySelector('.popup__close').addEventListener('click', function () {
-      window.closePopup();
+      window.map.closePopup();
     });
     newPopupElement.querySelector('.popup__close').addEventListener('keydown', function (evt) {
       if (evt.keyCode === ENTER_KEYCODE) {
-        window.closePopup();
+        window.map.closePopup();
       }
     });
 

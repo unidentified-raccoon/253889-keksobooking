@@ -13,7 +13,7 @@
     newElement.querySelector('img').setAttribute('alt', offer.offer.title);
     newElement.pinId = number;
     newElement.addEventListener('click', function () {
-      window.replaceOfferPopup(offer);
+      window.map.replaceOfferPopup(offer);
     });
 
     return newElement;

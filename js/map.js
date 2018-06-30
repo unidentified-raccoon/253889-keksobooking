@@ -30,18 +30,6 @@
 
   switchingFormFieldsetState(true);
 
-
-  // window.apartmentCards = [];
-
-  // function successHandler(response) {
-  //   // window.apartmentCards = response;
-  //   renderPinsOnMap(response);
-  // }
-
-  function onError() {
-    console.log('error');
-  }
-
   // window.backend.load(successHandler, onError);
   // function to render pins on mapPinsElement
   function renderPinsOnMap(offers) {
@@ -141,7 +129,7 @@
       if (isMapActive === false) {
         activateMap(event);
         activateForm(event);
-        window.backend.load(renderPinsOnMap, onError);
+        window.backend.load(renderPinsOnMap, window.errorHandler);
       }
       isMapActive = true;
 
@@ -155,6 +143,25 @@
     document.addEventListener('mouseup', onMouseUp);
   });
 
-  window.replaceOfferPopup = replaceOfferPopup;
-  window.closePopup = closePopup;
+  // ------------
+  var MAIN_PIN_DEFAULT_COORDS = {
+    x: 570, // px
+    y: 375 // px
+  };
+
+  function getPinLocation(target) {
+    formAddressField.value = target.offsetLeft + (MAIN_PIN_WIDTH / 2) + ' , ' + (target.offsetTop + MAIN_PIN_HEIGHT);
+  }
+
+  function mainPinCoordsToDefault() {
+    pinMain.style.left = MAIN_PIN_DEFAULT_COORDS.x + 'px';
+    pinMain.style.top = MAIN_PIN_DEFAULT_COORDS.y + 'px';
+    getPinLocation(pinMain);
+  }
+  // ------------
+  window.map = {
+    replaceOfferPopup: replaceOfferPopup,
+    closePopup: closePopup,
+    mainPinCoordsToDefault: mainPinCoordsToDefault
+  };
 })();
